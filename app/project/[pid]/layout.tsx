@@ -1,3 +1,5 @@
+import MobileDropdown from "@/components/home/mobile-dropdown";
+import SearchInput from "@/components/search-input";
 import type { Metadata, ResolvingMetadata } from "next";
 
 type MetadataProps = {
@@ -29,17 +31,10 @@ export async function generateMetadata(
   return {
     title: `${project.profile.name}`,
     description: project.profile.description,
+    keywords: Object.values(project.profile.tags),
     openGraph: {
-      title: project.profile.name,
+      title: `${project.profile.name} - NEAR Landscape`,
       description: project.profile.description,
-      images: [
-        {
-          url: project.profile.image.url,
-          width: 1200,
-          height: 630,
-          alt: project.profile.name,
-        },
-      ],
     },
   };
 }
@@ -48,10 +43,39 @@ type Props = MetadataProps & {
   children: React.ReactNode;
 };
 
-export default function ProjectLayout({ params, children }: Props) {
+type ProjectType = {
+  slug: string;
+  profile: {
+    name: string;
+    tagline: string;
+    image: {
+      url: string;
+    };
+    tags: Record<string, string>;
+  };
+};
+
+async function getProjects() {
+  const res = await fetch(
+    "https://nearcatalog.xyz/wp-json/nearcatalog/v1/projects",
+  );
+  const data = await res.json();
+  return data;
+}
+
+export default async function ProjectLayout({ params, children }: Props) {
   const { pid } = params;
   if (!pid) {
     return <div>Project ID not found</div>;
   }
-  return <div>{children}</div>;
+
+  const projects = await getProjects();
+  const projectValues: ProjectType[] = Object.values(projects);
+  return (
+    <div className="relative mt-4">
+      <SearchInput />
+      <MobileDropdown projects={projectValues} showOnDesktop />
+      {children}
+    </div>
+  );
 }
