@@ -4,14 +4,7 @@ import DiscoverMore from "./discover-more";
 import TokenInfo from "./token-info";
 import PriceInfo from "./price-info";
 import Script from "next/script";
-import Globe from "@/components/icons/globe";
-import GitHub from "@/components/icons/github";
 import Link from "next/link";
-import TwitterX from "@/components/icons/twitter-x";
-import Medium from "@/components/icons/medium";
-import Discord from "@/components/icons/discord";
-import Telegram from "@/components/icons/telegram";
-import { AppWindow } from "lucide-react";
 
 const WebsiteLink = ({
   href,
@@ -28,7 +21,7 @@ const WebsiteLink = ({
       target="_blank"
       rel="noreferrer"
       aria-label={ariaLabel}
-      className="flex items-center justify-center gap-1 rounded-full border border-[#80E9E5] p-1 text-xs font-bold text-[#80E9E5] transition-opacity duration-300 ease-in-out hover:opacity-50"
+      className="flex items-center justify-center gap-1 rounded-full border border-[#80E9E5] px-2 py-1 text-xs font-bold text-[#80E9E5] transition-opacity duration-300 ease-in-out hover:opacity-50"
     >
       {children}
     </Link>
@@ -44,6 +37,7 @@ interface ProjectPageProps {
 async function getProjectData(pid: string) {
   const res = await fetch(
     `https://nearcatalog.xyz/wp-json/nearcatalog/v1/project?pid=${pid}`,
+    { cache: "no-cache" },
   ).catch((error) => {
     throw new Error(error);
   });
@@ -59,12 +53,15 @@ function TwitterTimelineEmbed({ href, name }: { href: string; name: string }) {
           <i>Open link in new tab with right click or hold</i>
         </small>
       </div>
-      <div className="max-h-[500px] min-h-[500px] overflow-y-auto rounded-xl">
+      <div
+        className="overflow-y-auto rounded-xl"
+        style={{ maxHeight: "500px", minHeight: "500px" }}
+      >
         <a
-          className="twitter-timeline"
+          className="twitter-timeline h-full"
           data-theme="dark"
-          data-height="500"
           data-dnt="true"
+          data-height="500"
           data-tweet-limit="10"
           href={href}
         >
@@ -107,15 +104,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { dapp, lnc } = projectData.profile;
 
   return (
-    <div className="container mx-auto my-4 px-4 md:my-12">
-      <div className="flex flex-col gap-4 md:flex-row">
+    <div className="container mx-auto my-4 px-4 lg:my-12">
+      <div className="flex flex-col gap-4 lg:flex-row">
         <div
-          className={`w-full ${Object.keys(tokenInfo).length ? "md:max-w-[65%]" : null}`}
+          className={`w-full ${Object.keys(tokenInfo).length ? "lg:max-w-[65%]" : null}`}
         >
           <ProjectInfo projectData={projectData} />
 
           {Object.keys(tokenInfo).length ? (
-            <div className="my-4 w-full md:hidden">
+            <div className="my-4 w-full lg:hidden">
               <PriceInfo
                 tokenInfo={tokenInfo}
                 name={projectData.profile.name}
@@ -124,7 +121,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </div>
           ) : null}
           {projectData.profile.linktree?.twitter && (
-            <div className="md:hidden">
+            <div className="lg:hidden">
               <TwitterTimelineEmbed
                 href={projectData.profile.linktree?.twitter}
                 name={projectData.profile.name}
@@ -133,19 +130,25 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           )}
           <DiscoverMore
             pid={pid}
-            gridSize={Object.keys(tokenInfo).length ? 3 : 1}
+            gridSize={
+              Object.keys(tokenInfo).length ||
+              projectData.profile.linktree?.twitter
+                ? 3
+                : 1
+            }
           />
         </div>
         {Object.keys(tokenInfo).length ||
         projectData.profile.linktree?.twitter ? (
-          <div className="hidden w-full md:block md:max-w-[35%]">
-            <div className="hidden flex-wrap items-center justify-end gap-2 md:flex">
+          <div className="hidden w-full lg:block lg:max-w-[35%]">
+            <div className="hidden flex-wrap items-center justify-end gap-2 lg:flex">
               {website && (
                 <WebsiteLink
                   href={website}
                   ariaLabel={projectData.profile.name}
                 >
-                  <Globe /> Go to project
+                  <i className="bi bi-globe text-2xl text-[#80E9E5]" /> Go to
+                  project
                 </WebsiteLink>
               )}
               {github && (
@@ -153,39 +156,40 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   href={github}
                   ariaLabel={`${projectData.profile.name} Github`}
                 >
-                  <GitHub />
+                  <i className="bi bi-github text-2xl text-[#80E9E5]" /> Github
                   Github
                 </WebsiteLink>
               )}
               {dapp && (
                 <WebsiteLink href={dapp} ariaLabel="Go to App">
-                  <AppWindow /> App
+                  <i className="bi bi-app-indicator text-2xl text-[#80E9E5]" />{" "}
+                  App
                 </WebsiteLink>
               )}
             </div>
-            <div className="mt-2 hidden flex-col gap-2 md:flex">
+            <div className="mt-2 hidden flex-col gap-2 lg:flex">
               <p className="text-right text-xs font-medium">
                 Connect with {projectData.profile?.name} on Social Media:
               </p>
               <div className="mb-3 flex flex-wrap items-center justify-end gap-2">
                 {twitter && (
                   <Link href={twitter} aria-label="Twitter">
-                    <TwitterX />
+                    <i className="bi bi-twitter-x text-2xl text-[#80E9E5]" />
                   </Link>
                 )}
                 {medium && (
                   <Link href={medium} aria-label="Medium">
-                    <Medium />
+                    <i className="bi bi-medium text-2xl text-[#80E9E5]" />
                   </Link>
                 )}
                 {discord && (
                   <Link href={discord} aria-label="Discord">
-                    <Discord />
+                    <i className="bi bi-discord text-2xl text-[#80E9E5]" />
                   </Link>
                 )}
                 {telegram && (
                   <Link href={telegram} aria-label="Telegram">
-                    <Telegram />
+                    <i className="bi bi-telegram text-2xl text-[#80E9E5]" />
                   </Link>
                 )}
                 {lnc.score && (
@@ -215,7 +219,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </>
             ) : null}
             {projectData.profile.linktree?.twitter && (
-              <div className="hidden md:block">
+              <div className="hidden lg:block">
                 <TwitterTimelineEmbed
                   href={projectData.profile.linktree?.twitter}
                   name={projectData.profile.name}

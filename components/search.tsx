@@ -2,7 +2,6 @@
 
 import { useSearchStore } from "@/store/search-store";
 import { useEffect, useState } from "react";
-import { ChevronDownIcon, Search as SearchIcon } from "lucide-react";
 import { useTagsModalStore } from "@/store/tags-modal-store";
 import SearchInput from "./search-input";
 
@@ -62,7 +61,7 @@ export default function Search({ tags }: SearchProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="relative">
+      <div className="relative mb-4">
         <SearchInput />
       </div>
       <label className="hidden cursor-pointer items-center md:inline-flex">
@@ -73,9 +72,7 @@ export default function Search({ tags }: SearchProps) {
           onChange={() => setSearchAllTags((prev) => !prev)}
         />
         <div className="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
-        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-          All Tags
-        </span>
+        <span className="ms-3 text-sm font-medium text-gray-300">All Tags</span>
       </label>
       <div
         onClick={() => setIsOpen(!isOpen)}
@@ -84,7 +81,7 @@ export default function Search({ tags }: SearchProps) {
         <span>
           {`Selected Tags: ${searchTags.length === allTags.length ? "All" : searchTags.join(", ")}`}
         </span>
-        <ChevronDownIcon className="h-4 w-4" />
+        <i className="bi bi-chevron-down h-4 w-4 text-xl" />
       </div>
 
       <Tags handleTagClick={handleTagClick} />
