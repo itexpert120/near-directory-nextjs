@@ -1,4 +1,4 @@
-import SectionHeading from "@/components/section-heading";
+import SectionHeading from "@/components/ui/section-heading";
 import EcosystemTabs from "@/components/home/ecosystem/tabs";
 
 export default function EcosystemSupport() {
@@ -7,7 +7,7 @@ export default function EcosystemSupport() {
       id="ecosystem-support"
       className="relative flex w-full flex-col items-center justify-center gap-3 bg-cover bg-no-repeat"
       style={{
-        backgroundImage: "url(/bg/ecosystem-bg.webp)",
+        backgroundImage: "url(/assets/images/bg/mountains.webp)",
       }}
     >
       <div className="container z-[1] mx-auto flex flex-col items-center justify-center gap-12">

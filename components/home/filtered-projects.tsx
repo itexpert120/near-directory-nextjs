@@ -3,7 +3,7 @@
 import { useSearchStore } from "@/store/search-store";
 import Image from "next/image";
 
-import Project from "../project";
+import Project from "../ui/project";
 import { ProjectType } from "@/lib/types";
 import MobileDropdown from "./mobile-dropdown";
 
@@ -36,7 +36,7 @@ export default function FilteredProjects({ projects }: FilteredProjectsProps) {
     return (
       <div className="my-32 flex flex-col items-center justify-center gap-4 font-medium text-[#BEBDBE]">
         <Image
-          src={"/assets/error.webp"}
+          src={"/assets/images/error.webp"}
           alt={"Not found error"}
           width={182}
           height={144}
@@ -50,7 +50,7 @@ export default function FilteredProjects({ projects }: FilteredProjectsProps) {
     return (
       <div className="my-32 flex flex-col items-center justify-center gap-4 font-medium text-[#BEBDBE]">
         <Image
-          src={"/assets/error.webp"}
+          src={"/assets/images/error.webp"}
           alt={"Not found error"}
           width={182}
           height={144}

@@ -1,12 +1,11 @@
 import Image from "next/image";
-import ProjectInfo from "./project-info";
-import DiscoverMore from "./discover-more";
-import TokenInfo from "./token-info";
-import PriceInfo from "./price-info";
+import ProjectInfo from "./_components/project-info";
+import DiscoverMore from "./_components/discover-more";
+import TokenInfo from "./_components/token-info";
+import PriceInfo from "./_components/price-info";
 import Script from "next/script";
 import Link from "next/link";
-import ShareDropdown from "./share-dropdown";
-import LinkTree from "./linktree";
+import LinkTree from "./_components/linktree";
 
 const WebsiteLink = ({
   href,
@@ -88,7 +87,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     return (
       <div className="my-32 flex flex-col items-center justify-center gap-4 font-medium text-[#BEBDBE]">
         <Image
-          src={"/assets/error.webp"}
+          src={"/assets/images/error.webp"}
           alt={"Not found error"}
           width={182}
           height={144}

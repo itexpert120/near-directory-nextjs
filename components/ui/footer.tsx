@@ -1,8 +1,8 @@
 import Link from "next/link";
-import GradientButton from "./gradient-button";
+import GradientButton from "@/components/ui/gradient-button";
 import Image from "next/image";
 
-import NearLogo from "@/public/Near-landscape.svg";
+import NearLogo from "@/public/assets/images/logo.svg";
 
 export default function Footer() {
   return (
