@@ -1,44 +1,16 @@
 import { fetchProject } from "@/lib/near-catalog";
 import Image from "next/image";
-import Script from "next/script";
 import DiscoverMore from "./_components/discover-more";
 import LinkTree from "./_components/linktree";
 import PriceInfo from "./_components/price-info";
 import ProjectInfo from "./_components/project-info";
 import TokenInfo from "./_components/token-info";
+import TwitterTimelineEmbed from "./_components/twitter-embed";
 
 interface ProjectPageProps {
   params: {
     pid: string;
   };
-}
-
-function TwitterTimelineEmbed({ href, name }: { href: string; name: string }) {
-  return (
-    <div className="my-3 rounded-3xl bg-[#1b1d2a]">
-      <div className="p-4">
-        <small>
-          <i>Open link in new tab with right click or hold</i>
-        </small>
-      </div>
-      <div
-        className="overflow-y-auto rounded-xl"
-        style={{ maxHeight: "500px", minHeight: "500px" }}
-      >
-        <a
-          className="twitter-timeline h-full"
-          data-theme="dark"
-          data-dnt="true"
-          data-height="500"
-          data-tweet-limit="10"
-          href={href}
-        >
-          Tweets by {name}
-        </a>
-        <Script async src="https://platform.twitter.com/widgets.js"></Script>
-      </div>
-    </div>
-  );
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
@@ -69,30 +41,12 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       : {};
 
   return (
-    <div className="container mx-auto my-4 px-4 lg:my-12">
+    <main className="container mx-auto my-4 px-4 lg:my-12">
       <div className="flex flex-col gap-4 lg:flex-row">
         <div
           className={`w-full ${Object.keys(tokenInfo).length ? "lg:max-w-[65%]" : null}`}
         >
           <ProjectInfo projectData={projectData} />
-
-          {Object.keys(tokenInfo).length ? (
-            <div className="my-4 w-full lg:hidden">
-              <PriceInfo
-                tokenInfo={tokenInfo}
-                name={projectData.profile.name}
-              />
-              <TokenInfo tokenInfo={tokenInfo} />
-            </div>
-          ) : null}
-          {projectData.profile.linktree?.twitter && (
-            <div className="lg:hidden">
-              <TwitterTimelineEmbed
-                href={projectData.profile.linktree?.twitter}
-                name={projectData.profile.name}
-              />
-            </div>
-          )}
           <DiscoverMore
             pid={pid}
             gridSize={
@@ -105,8 +59,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
         {Object.keys(tokenInfo).length ||
         projectData.profile.linktree?.twitter ? (
-          <div className="hidden w-full lg:block lg:max-w-[35%]">
-            <LinkTree project={projectData} />
+          <div className="w-full lg:max-w-[35%]">
+            <div className="hidden lg:block">
+              <LinkTree project={projectData} />
+            </div>
             {Object.keys(tokenInfo).length ? (
               <>
                 <PriceInfo
@@ -117,7 +73,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </>
             ) : null}
             {projectData.profile.linktree?.twitter && (
-              <div className="hidden lg:block">
+              <div>
                 <TwitterTimelineEmbed
                   href={projectData.profile.linktree?.twitter}
                   name={projectData.profile.name}
@@ -127,6 +83,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           </div>
         ) : null}
       </div>
-    </div>
+    </main>
   );
 }
