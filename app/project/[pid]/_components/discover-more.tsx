@@ -1,18 +1,10 @@
+import { fetchRelatedProjects } from "@/lib/near-catalog";
 import Image from "next/image";
 import Link from "next/link";
 
 interface DiscoverMoreProps {
   pid: string;
   gridSize: number;
-}
-
-async function getRelatedProjects(pid: string) {
-  const res = await fetch(
-    `https://nearcatalog.xyz/wp-json/nearcatalog/v1/related-projects?pid=${pid}`,
-    { cache: "no-cache" },
-  );
-  const data = await res.json();
-  return data;
 }
 
 function ProjectCard({ project }: { project: any }) {
@@ -40,7 +32,7 @@ export default async function DiscoverMore({
   pid,
   gridSize,
 }: DiscoverMoreProps) {
-  const relatedProjects = await getRelatedProjects(pid);
+  const relatedProjects = await fetchRelatedProjects(pid);
 
   if (!relatedProjects) {
     return (
@@ -60,7 +52,7 @@ export default async function DiscoverMore({
     <div className="mt-4 flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Discover More</h2>
       <div
-        className={`grid grid-cols-1 gap-4 ${gridSize >= 3 ? "md:grid-cols-2" : "md:grid-cols-3"}`}
+        className={`discover-more grid grid-cols-1 gap-4 ${gridSize >= 3 ? "md:grid-cols-2" : "md:grid-cols-3"}`}
       >
         {Object.keys(relatedProjects).map((key) => (
           <ProjectCard key={key} project={relatedProjects[key]} />
