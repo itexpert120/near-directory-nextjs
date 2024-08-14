@@ -1,6 +1,6 @@
 import { defaultCache } from "@serwist/next/worker";
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
-import { Serwist } from "serwist";
+import { Serwist, StaleWhileRevalidate } from "serwist";
 
 // This declares the value of `injectionPoint` to TypeScript.
 // `injectionPoint` is the string that will be replaced by the
@@ -19,7 +19,19 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [
+    {
+      matcher: ({ url }) => url.pathname.startsWith("/"),
+      handler: new StaleWhileRevalidate(),
+    },
+    // match api requests to nearcatalog.xyz
+    {
+      matcher: ({ url }) => url.hostname === "nearcatalog.xyz",
+      handler: new StaleWhileRevalidate({
+        cacheName: "nearcatalog-api",
+      }),
+    },
+  ],
 });
 
 serwist.addEventListeners();
