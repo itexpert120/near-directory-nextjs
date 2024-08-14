@@ -10,15 +10,11 @@ test.describe("Homepage", () => {
       page
         .getByRole("navigation")
         .getByRole("link", { name: "Submit your project" });
-
     await expect(getSubmitProjectButton()).toBeVisible();
     const popupPromise = page.waitForEvent("popup");
-
     await getSubmitProjectButton().click();
-
     const popup = await popupPromise;
     const popupUrl = await popup.evaluate("location.href");
-
     await expect(popupUrl).toContain(
       "https://submit.nearcatalog.xyz/new-project/",
     );
@@ -27,17 +23,14 @@ test.describe("Homepage", () => {
   test("project in ecosystem section should redirect to project page", async ({
     page,
   }) => {
-    const firstProject = page.locator(".no-scrollbar > div").first();
-
+    const ecosystemProjects = page.locator(".no-scrollbar").first();
+    await expect(ecosystemProjects).toBeVisible();
+    const firstProject = ecosystemProjects.getByRole("link").first();
     await expect(firstProject).toBeVisible();
-
     const projectHeading = firstProject.locator("h3");
     await expect(projectHeading).toBeVisible();
-
-    await firstProject.click();
-
-    const projectPageHeading = page.locator("h2").first();
-    await page.waitForLoadState("networkidle");
+    await firstProject.click({ force: true });
+    const projectPageHeading = page.locator("#top div").locator("h2").first();
     await expect(projectPageHeading).toBeVisible();
   });
 
@@ -46,83 +39,77 @@ test.describe("Homepage", () => {
   }) => {
     const section = page.locator("#hot-projects div").first();
     await expect(section).toBeVisible();
-    const project = page.locator(".relative > div > .relative > .no-scrollbar");
+    const projects = page.locator(
+      ".relative > div > .relative > .no-scrollbar",
+    );
+    await expect(projects).toBeVisible();
+    const project = projects.locator(".project-card").first();
     await expect(project).toBeVisible();
-    const projectHeading = project.locator("h3").first();
-    await expect(projectHeading).toBeVisible();
-    await project.click();
-    const projectPageHeading = page.locator("h2").first();
-    await page.waitForLoadState("networkidle");
+    await project.click({ force: true });
+    const projectPageHeading = page.locator("#top div").locator("h2").first();
     await expect(projectPageHeading).toBeVisible();
   });
 
   test("should show projects in discover section", async ({ page }) => {
-    const getDiscoverSection = () =>
-      page.getByRole("heading", { name: "Discover All Projects" });
-    await expect(getDiscoverSection()).toBeVisible();
-
-    await expect(
-      page
-        .locator("#all-projects div")
-        .filter({ hasText: "MITTE:memeMITTE:meme is the" })
-        .nth(1),
-    ).toBeVisible();
+    const projectsList = page.locator(".projects-list");
+    await expect(projectsList).toBeVisible();
   });
 
   test("search should filter projects", async ({ page }) => {
     const searchInput = page.getByPlaceholder("Search projects");
     await expect(searchInput).toBeVisible();
-    await searchInput.fill("mitte");
-    await expect(
-      page
-        .locator("#all-projects div")
-        .filter({ hasText: "MITTE:memeMITTE:meme is the" })
-        .nth(1),
-    ).toBeVisible();
+    await searchInput.fill("build dao");
+    // intercept network requests
+    await page.route("**/*", (route) => {
+      route.fulfill({
+        status: 200,
+        body: JSON.stringify({
+          "build-dao": {
+            slug: "build-dao",
+            profile: {
+              name: "Build DAO",
+              tagline:
+                "Decentralizing the developer community, pushing protocol standards, fostering innovation, and enabling collaboration.",
+              image: {
+                url: "https://nearcatalog.xyz/wp-content/uploads/nearcatalog/build-dao.jpg",
+              },
+              tags: {
+                "ecosystem-support": "Ecosystem Support",
+              },
+            },
+          },
+        }),
+      });
+    });
+
+    const buildDaoProject = page
+      .locator(".projects-list")
+      .getByText("Build DAO");
+    await expect(buildDaoProject).toBeVisible();
   });
 
-  test("tags should filter projects", async ({ page }) => {
-    const tag = page.locator("div").filter({ hasText: /^Chain Abstraction$/ });
+  test("tags should redirect to category page", async ({ page }) => {
+    const tags = page.locator(".tags").first();
+    await expect(tags).toBeVisible();
+    const tag = tags.locator("a").first();
     await expect(tag).toBeVisible();
-    await tag.click();
-    await expect(
-      page.locator("#all-projects div").filter({ hasText: "Defuse" }).nth(1),
-    ).toBeVisible();
-  });
-
-  test("should deselect and reselect all tags when toggling", async ({
-    page,
-  }) => {
-    const tagsToggle = page.getByLabel("Toggle all tags");
-
-    await expect(tagsToggle).toBeVisible();
-
-    const tags = await page.getByTestId("tag").all();
-
-    // default should be all tags checked
-    await expect(tagsToggle).toBeChecked();
-    for (const tag of tags) {
-      // verify that all tags do not have classname opacity-50
-      expect(tag).not.toHaveClass(/opacity-50/);
-    }
-
-    // toggle all tags off
-    await tagsToggle.setChecked(true);
-    await page.waitForTimeout(100);
-    for (const tag of tags) {
-      // verify that all tags have classname opacity-50
-      expect(tag).toHaveClass(/opacity-50/);
-    }
+    await tag.click({ force: true });
+    await page.waitForURL("/category/*");
+    await expect(page.locator("h2").first()).toBeVisible();
   });
 
   test("should show error on no results found", async ({ page }) => {
     const searchInput = page.getByPlaceholder("Search projects");
-    await expect(searchInput).toBeVisible();
-    await searchInput.fill("test");
-    await expect(
-      page.getByRole("heading", {
-        name: "Sorry, we could not find any results",
-      }),
-    ).toBeVisible();
+    await expect(searchInput).toBeEnabled();
+    await searchInput.fill("gibberish");
+    await page.route("**/*", (route) => {
+      route.fulfill({
+        status: 200,
+        body: JSON.stringify(false),
+      });
+    });
+    await expect(page.locator(".projects-list")).toBeHidden();
+    await expect(page.locator(".projects-list-skeleton")).toBeHidden();
+    await expect(page.locator(".error-message")).toBeVisible();
   });
 });

@@ -1,26 +1,27 @@
 import { fetchRelatedProjects } from "@/lib/near-catalog";
 import Image from "next/image";
 import Link from "next/link";
+import ErrorImage from "@/public/assets/images/error.webp";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 interface DiscoverMoreProps {
   pid: string;
-  gridSize: number;
 }
 
 function ProjectCard({ project }: { project: any }) {
   return (
     <Link
       href={`/project/${project.slug}#top`}
-      className="flex flex-row gap-2 rounded-3xl bg-[#1b1d2a] p-4 transition-colors duration-300 ease-in-out hover:bg-[#2b2d3a]"
+      className="flex flex-row gap-2 rounded-lg bg-[#1b1d2a] p-4 transition-colors duration-300 ease-in-out hover:bg-[#2b2d3a]"
     >
-      <Image
+      <ImageWithFallback
         src={project.profile.image.url}
         alt={project.profile.name}
         className="h-16 w-16 rounded-full object-cover"
         width={64}
         height={64}
       />
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 overflow-hidden">
         <h3 className="text-base font-bold">{project.profile.name}</h3>
         <p className="text-sm font-medium">{project.profile.tagline}</p>
       </div>
@@ -28,19 +29,17 @@ function ProjectCard({ project }: { project: any }) {
   );
 }
 
-export default async function DiscoverMore({
-  pid,
-  gridSize,
-}: DiscoverMoreProps) {
+export default async function DiscoverMore({ pid }: DiscoverMoreProps) {
   const relatedProjects = await fetchRelatedProjects(pid);
 
   if (!relatedProjects) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 font-medium text-[#BEBDBE]">
         <Image
-          src={"/assets/images/error.webp"}
+          src={ErrorImage}
           alt={"Not found error"}
           width={182}
+          placeholder="blur"
           height={144}
         />
         <h2>Sorry, we could not find the results for:</h2>
@@ -49,11 +48,9 @@ export default async function DiscoverMore({
     );
   }
   return (
-    <div className="mt-4 flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Discover More</h2>
-      <div
-        className={`discover-more grid grid-cols-1 gap-4 ${gridSize >= 3 ? "md:grid-cols-2" : "md:grid-cols-3"}`}
-      >
+      <div className={`discover-more grid grid-cols-1 gap-4 lg:grid-cols-2`}>
         {Object.keys(relatedProjects).map((key) => (
           <ProjectCard key={key} project={relatedProjects[key]} />
         ))}

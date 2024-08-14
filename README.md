@@ -5,9 +5,8 @@
 
 <div align="center">
 
-<img src="https://builders.mypinata.cloud/ipfs/QmcNogThQvv2vTdvScoLUXCV4ncZv7h79quB7yhhTXwhC9" alt="near landscape" height="100" />
-<br />
-<br />
+<h1 style="font-size: 2.5rem; font-weight: bold;">📒NEARCatalog</h1>
+
   <p>
     <strong>Ecosystem directory for <a href="https://near.org/" target="_blank">NEAR Protocol</a>.</strong>
   </p>
@@ -65,7 +64,7 @@ See the full [testing guide](./playwright-tests/README.md).
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [create-next-app](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-It uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load [Inter](https://fonts.google.com/specimen/Inter), a custom Google Font.
+It uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load [Manrope](https://fonts.google.com/specimen/Manrope), a custom Google Font.
 
 ### Routes
 
@@ -74,7 +73,6 @@ This project uses the [Next.js App Router](https://nextjs.org/docs/app), and so 
 - `/`: Home page of the application. It displays a list of projects that are available on the NEAR platform.
 - `/project/:projectId`: Displays the details of a specific project. It includes information about the project, such as the name, description, and the list of tags associated with the project.
 - `/category/:categoryId`: Displays a list of projects that are associated with a specific category.
-- `/bookmarks`: Shows your projects bookmarked in local storage
 
 ### Global State
 
@@ -84,6 +82,7 @@ The state is stored in the `store` folder. There are two stores that are used in
 
 - `search-store.ts`: Manages the search state, including the search query and the tags that are selected.
 - `tags-modal-store.ts`: Manages the state of the tags modal for mobile devices.
+- `search-modal-store.ts`: Manages the state of search modal.
 
 ## Contributing
 

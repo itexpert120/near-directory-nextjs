@@ -1,6 +1,6 @@
 import HomeStats from "@/components/home/stats";
 import GradientButton from "@/components/ui/gradient-button";
-import HomeImages from "./images";
+import HomeImages from "@/components/home/images";
 
 export default function HomeHero() {
   return (
@@ -12,7 +12,7 @@ export default function HomeHero() {
           <br />
           Ecosystem Landscape
         </h1>
-        <h2 className="z-[5] text-balance text-center text-[40px] font-bold leading-tight text-white sm:hidden">
+        <h2 className="z-[5] text-balance text-center text-[2.5rem] font-bold leading-tight text-white sm:hidden">
           Discover NEAR <br /> Landscape
         </h2>
         <HomeStats />
